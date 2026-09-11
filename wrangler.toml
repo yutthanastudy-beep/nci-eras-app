@@ -8,4 +8,4 @@ directory = "./"
 [[d1_databases]]
 binding = "DB"
 database_name = "nci-eras-db"
-database_id = "nci-eras-db"
+database_id = "d6308105-02cc-4082-9872-5f0b890305e9"
