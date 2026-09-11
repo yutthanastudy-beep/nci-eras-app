@@ -1,9 +1,0 @@
-name = "nci-eras-app"
-compatibility_date = "2026-09-11"
-
-pages_build_output_dir = "./"
-
-[[d1_databases]]
-binding = "DB"
-database_name = "nci-eras-db"
-database_id = "nci-eras-db"
