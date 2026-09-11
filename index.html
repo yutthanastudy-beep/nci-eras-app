@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NCI ERAS Data System - สถาบันมะเร็งแห่งชาติ</title>
+  <meta name="description" content="ระบบเก็บรวบรวมข้อมูลและการประเมินผลการดูแลผู้ป่วยตามแนวทาง ERAS สถาบันมะเร็งแห่งชาติ">
+  
+  <!-- Apple Font & Inter Fallback -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Custom Apple Design System Styles -->
+  <link rel="stylesheet" href="styles/apple-design.css">
+
+  <!-- Chart.js for Clinical Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- Global Nav Bar (Apple Black Header) -->
+  <header class="global-nav">
+    <a href="#" class="global-nav-brand" onclick="switchView('landing-view'); return false;">
+      <svg width="18" height="18" viewBox="0 0 24 24">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+      </svg>
+      <span>National Cancer Institute</span>
+      <span class="global-nav-badge">ERAS Oncology</span>
+    </a>
+    <ul class="global-nav-menu">
+      <li><a href="#" onclick="switchView('landing-view'); return false;">หน้าหลัก</a></li>
+      <li><a href="#" onclick="switchView('dashboard-view'); return false;">แดชบอร์ดวิเคราะห์</a></li>
+      <li><a href="#" onclick="switchView('registry-view'); return false;">ทะเบียนผู้ป่วย</a></li>
+      <li><a href="#" onclick="openFormView(); return false;">+ บันทึกรายใหม่</a></li>
+    </ul>
+  </header>
+
+  <!-- Sub-Nav Frosted Glass -->
+  <nav class="sub-nav-frosted">
+    <div class="sub-nav-title">
+      <span>ERAS Clinical Data System</span>
+    </div>
+    <div class="sub-nav-links">
+      <a class="sub-nav-link active" data-target="landing-view">หน้าหลัก</a>
+      <a class="sub-nav-link" data-target="dashboard-view">แดชบอร์ดวิเคราะห์</a>
+      <a class="sub-nav-link" data-target="registry-view">ทะเบียนผู้ป่วย</a>
+      <button class="btn-primary" onclick="openFormView()">+ บันทึกผู้ป่วยใหม่</button>
+    </div>
+  </nav>
+
+  <main>
+    <!-- VIEW 1: LANDING PAGE (Apple Design Gallery Style) -->
+    <div id="landing-view" class="view-container active">
+      <!-- Section 1: Hero Tile (Light) -->
+      <section class="product-tile-light">
+        <div class="tile-content-container">
+          <p class="tagline-text" style="color: var(--color-primary); margin-bottom: 12px;">สถาบันมะเร็งแห่งชาติ (National Cancer Institute)</p>
+          <h1 class="hero-display" style="margin-bottom: 16px;">ERAS Protocol Data Collection</h1>
+          <p class="lead-text" style="margin-bottom: 28px;">
+            ระบบจัดเก็บและประเมินผลการดูแลผู้ป่วยผ่าตัดโรคมะเร็งแบบยกระดับการฟื้นตัวหลังผ่าตัด (Enhanced Recovery After Surgery)
+          </p>
+          <div style="display: flex; gap: 16px; justify-content: center; align-items: center;">
+            <button class="btn-primary" id="btnHeroStart">เริ่มบันทึกข้อมูลผู้ป่วย</button>
+            <button class="btn-secondary-pill" onclick="switchView('dashboard-view')">ดูผลการประเมินสถาบัน</button>
+          </div>
+
+          <div class="hero-image-wrapper">
+            <img src="assets/eras_hero_device.jpg" alt="ERAS Recovery Dashboard Showcase">
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Dark Feature Tile -->
+      <section class="product-tile-dark">
+        <div class="tile-content-container">
+          <h2 class="display-lg" style="margin-bottom: 16px;">ครอบคลุมการบันทึก 6 หมวดตามมาตรฐานสากล</h2>
+          <p class="lead-text" style="color: var(--color-body-muted); margin-bottom: 40px;">
+            รวบรวมตัวแปรสำคัญทางคลินิกครบถ้วน เพื่อการวิจัยและการปรับปรุงคุณภาพการดูแลผู้ป่วยผ่าตัดมะเร็ง
+          </p>
+
+          <div class="grid-cards">
+            <div class="store-utility-card card-dark-theme">
+              <div class="card-title">1. ข้อมูลพื้นฐานผู้ป่วย</div>
+              <div class="card-subtitle">HN, AN, วันเกิด, ส่วนสูง, น้ำหนัก คำนวณอายุและ BMI อัตโนมัติ</div>
+            </div>
+
+            <div class="store-utility-card card-dark-theme">
+              <div class="card-title">2. ประเมินก่อนผ่าตัด</div>
+              <div class="card-subtitle">ICD-10, Staging, ASA Score, NRS-2002 (แจ้งเตือนความเสี่ยงสูง ≥3)</div>
+            </div>
+
+            <div class="store-utility-card card-dark-theme">
+              <div class="card-title">3. ERAS Compliance Checklist</div>
+              <div class="card-subtitle">การปฐมนิเทศ, Carbohydrate loading, ระยะเวลางดน้ำเปล่า (เป้าหมาย 2-3 ชม.)</div>
+            </div>
+
+            <div class="store-utility-card card-dark-theme">
+              <div class="card-title">4. ข้อมูลระหว่างผ่าตัด</div>
+              <div class="card-subtitle">เวลาลงมีด-เย็บแผล, วิธีผ่าตัด (Open/Lap/Robotic), ปริมาณสารน้ำ เสียเลือด</div>
+            </div>
+
+            <div class="store-utility-card card-dark-theme">
+              <div class="card-title">5. การฟื้นฟูหลังผ่าตัด</div>
+              <div class="card-subtitle">เวลาเริ่มลุกเดิน (≥15 นาที), จิบน้ำ, ถอดสายปัสสาวะ, Pain score, MME</div>
+            </div>
+
+            <div class="store-utility-card card-dark-theme">
+              <div class="card-title">6. ผลลัพธ์ & ภาวะแทรกซ้อน</div>
+              <div class="card-subtitle">คำนวณ Length of Stay (LOS) อัตโนมัติ, Clavien-Dindo Classification</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Parchment Evidence Tile -->
+      <section class="product-tile-parchment">
+        <div class="tile-content-container">
+          <h2 class="display-lg" style="margin-bottom: 20px;">ผลสัมฤทธิ์ทางการแพทย์ด้วยแนวทาง ERAS</h2>
+          <div class="metric-card-group" style="margin-top: 32px;">
+            <div class="metric-card">
+              <div class="metric-label">ลดระยะเวลานอน รพ.</div>
+              <div class="metric-value primary">25-35%</div>
+              <div class="metric-foot">เทียบกับการดูแลแบบดั้งเดิม</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">เป้าหมาย Compliance</div>
+              <div class="metric-value success">≥ 80%</div>
+              <div class="metric-foot">อัตราปฏิบัติตามเกณฑ์ ERAS</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">ลดภาวะแทรกซ้อน</div>
+              <div class="metric-value warning">40%</div>
+              <div class="metric-foot">ลดการเกิด Clavien-Dindo ≥ Grade II</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- VIEW 2: CLINICAL DASHBOARD & ANALYTICS -->
+    <div id="dashboard-view" class="view-container">
+      <div style="max-width: 1200px; margin: 0 auto; padding: 40px 24px;">
+        <div style="margin-bottom: 32px;">
+          <h1 class="display-lg">ภาพรวมการประเมิน ERAS สถาบันมะเร็งแห่งชาติ</h1>
+          <p style="color: var(--color-ink-muted-48);">สรุปสถิติตัวชี้วัดการดูแลผู้ป่วยผ่าตัดและอัตราความสมบูรณ์ในการปฏิบัติตามแนวทาง ERAS</p>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="metric-card-group">
+          <div class="metric-card">
+            <div class="metric-label">ผู้ป่วยในระบบทั้งหมด</div>
+            <div class="metric-value" id="kpiTotalPatients">0</div>
+            <div class="metric-foot">เคสผ่าตัดที่จัดเก็บข้อมูล</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">อัตราปฏิบัติตามเกณฑ์เฉลี่ย</div>
+            <div class="metric-value primary" id="kpiAvgCompliance">0%</div>
+            <div class="metric-foot">ERAS Overall Compliance Rate</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">ระยะเวลานอน รพ. เฉลี่ย (LOS)</div>
+            <div class="metric-value success" id="kpiAvgLOS">0 วัน</div>
+            <div class="metric-foot">Length of Stay (วัน)</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">อัตราเกิดภาวะแทรกซ้อน 30 วัน</div>
+            <div class="metric-value warning" id="kpiComplicationRate">0%</div>
+            <div class="metric-foot">30-day Complication Rate</div>
+          </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px; margin-top: 32px;">
+          <!-- Chart 1: Compliance Radar -->
+          <div class="store-utility-card" style="height: 420px; display: flex; flex-direction: column;">
+            <div class="card-title">อัตราการปฏิบัติตามเกณฑ์ ERAS รายหมวด (%)</div>
+            <div class="card-subtitle">ERAS Protocol Compliance Breakdown</div>
+            <div style="flex: 1; position: relative;">
+              <canvas id="complianceChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 2: Surgical Approach -->
+          <div class="store-utility-card" style="height: 420px; display: flex; flex-direction: column;">
+            <div class="card-title">สัดส่วนวิธีการผ่าตัด (Surgical Approach)</div>
+            <div class="card-subtitle">Laparoscopic vs Robotic vs Open</div>
+            <div style="flex: 1; position: relative;">
+              <canvas id="approachChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 3: Complication Severity -->
+          <div class="store-utility-card" style="height: 420px; display: flex; flex-direction: column; grid-column: span 1;">
+            <div class="card-title">ระดับความรุนแรงภาวะแทรกซ้อน (Clavien-Dindo)</div>
+            <div class="card-subtitle">Postoperative Complications Classification</div>
+            <div style="flex: 1; position: relative;">
+              <canvas id="complicationChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 3: PATIENT DIRECTORY REGISTRY -->
+    <div id="registry-view" class="view-container">
+      <div style="max-width: 1200px; margin: 0 auto; padding: 40px 24px;">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; gap: 16px;">
+          <div>
+            <h1 class="display-lg">ทะเบียนผู้ป่วย ERAS (Patient Registry)</h1>
+            <p style="color: var(--color-ink-muted-48);">ค้นหา ตรวจสอบข้อมูล และส่งออกรายงานสำหรับการวิจัย</p>
+          </div>
+          <div style="display: flex; gap: 12px;">
+            <button class="btn-pearl-capsule" id="btnExportCSV"> Export CSV</button>
+            <button class="btn-pearl-capsule" id="btnExportJSON"> Export Backup</button>
+            <button class="btn-pearl-capsule" id="btnImportJSON"> Import JSON</button>
+            <input type="file" id="fileImportJSON" accept=".json" style="display: none;">
+            <button class="btn-primary" id="btnNewPatient">+ บันทึกรายใหม่</button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <div class="table-toolbar">
+            <input type="text" class="search-input" id="searchPatientInput" placeholder=" ค้นหาด้วย HN, AN หรือ ICD-10...">
+
+            <div style="display: flex; gap: 12px; align-items: center;">
+              <select class="form-select" id="filterApproach" style="padding: 7px 12px; font-size: 14px;">
+                <option value="">ทุกวิธีผ่าตัด</option>
+                <option value="Laparoscopic">Laparoscopic</option>
+                <option value="Robotic">Robotic</option>
+                <option value="Open">Open</option>
+                <option value="Converted">Converted</option>
+              </select>
+
+              <select class="form-select" id="filterComplication" style="padding: 7px 12px; font-size: 14px;">
+                <option value="">ทุกสภาวะแทรกซ้อน</option>
+                <option value="no">ไม่มีภาวะแทรกซ้อน</option>
+                <option value="yes">มีภาวะแทรกซ้อน</option>
+              </select>
+            </div>
+          </div>
+
+          <table class="eras-table">
+            <thead>
+              <tr>
+                <th>HN</th>
+                <th>AN</th>
+                <th>เพศ / อายุ</th>
+                <th>วินิจฉัย (ICD-10)</th>
+                <th>วิธีผ่าตัด</th>
+                <th>ERAS Compliance</th>
+                <th>LOS</th>
+                <th>ภาวะแทรกซ้อน</th>
+                <th>จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="patientRegistryTbody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 4: DATA ENTRY FORM -->
+    <div id="form-view" class="view-container">
+      <div class="form-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+          <div>
+            <h1 class="display-lg" id="formViewTitle">บันทึกข้อมูลผู้ป่วย ERAS รายใหม่</h1>
+            <p style="color: var(--color-ink-muted-48);">กรอกข้อมูลคลินิก 6 หมวดตามเกณฑ์มาตรฐานสถาบันมะเร็งแห่งชาติ</p>
+          </div>
+          <button class="btn-pearl-capsule" id="btnCancelForm">ยกเลิก / ย้อนกลับ</button>
+        </div>
+
+        <form id="erasPatientForm">
+          <input type="hidden" id="formPatientId">
+
+          <!-- 1. Demographics & Patient Profile -->
+          <div class="form-section">
+            <h2 class="form-section-title">
+              <span class="global-nav-badge" style="font-size: 14px;">หมวด 1</span>
+              หมวดข้อมูลพื้นฐานผู้ป่วย (Demographics & Patient Profile)
+            </h2>
+            <div class="form-section-subtitle">ข้อมูลระบุตัวตนผู้ป่วยและดรรชนีมวลกาย</div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label form-label-required">Hospital Number (HN)</label>
+                <input type="text" class="form-input" id="patient_hn" required placeholder="เช่น HN67-00124" maxlength="15">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label-required">Admission Number (AN)</label>
+                <input type="text" class="form-input" id="admission_an" required placeholder="เช่น AN67-09412" maxlength="15">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label-required">วันเดือนปีเกิด (DOB)</label>
+                <input type="date" class="form-input" id="dob" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">คำนวณอายุ ณ วันผ่าตัด</label>
+                <input type="text" class="form-input" id="calc_age_display" readonly value="-">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label-required">เพศโดยกำเนิด (Gender)</label>
+                <select class="form-select" id="gender" required>
+                  <option value="Male">Male (ชาย)</option>
+                  <option value="Female">Female (หญิง)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label-required">ส่วนสูง (cm)</label>
+                <input type="number" step="0.1" min="1" max="250" class="form-input" id="height_cm" required placeholder="165.0">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label-required">น้ำหนักก่อนผ่าตัด (kg)</label>
+                <input type="number" step="0.1" min="1" max="300" class="form-input" id="weight_kg" required placeholder="65.0">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">BMI อัตโนมัติ (kg/m²)</label>
+                <input type="text" class="form-input" id="calc_bmi_display" readonly value="-">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label-required">ประวัติการสูบบุหรี่ (Smoking Status)</label>
+                <select class="form-select" id="smoking_status" required>
+                  <option value="Never">Never (ไม่เคยสูบ)</option>
+                  <option value="Ex-smoker">Ex-smoker (เลิกแล้ว > 4 สัปดาห์)</option>
+                  <option value="Current">Current (ยังสูบอยู่ หรือเลิก < 4 สัปดาห์)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Preoperative & Clinical Status -->
+          <div class="form-section">
+            <h2 class="form-section-title">
+              <span class="global-nav-badge" style="font-size: 14px;">หมวด 2</span>
+              หมวดข้อมูลประเมินก่อนผ่าตัด (Preoperative & Clinical Status)
+            </h2>
+            <div class="form-section-subtitle">การวินิจฉัยโรค ระยะมะเร็ง และผลประเมินสภาวะร่างกาย</div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label form-label-required">รหัสวินิจฉัยหลัก (ICD-10)</label>
+                <input type="text" class="form-input" id="icd10_diagnosis" required placeholder="เช่น C18.9, C20" maxlength="10">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label-required">ระยะมะเร็ง (Clinical Staging)</label>
+                <select class="form-select" id="cancer_stage" required>
+                  <option value="Stage 0">Stage 0</option>
+                  <option value="Stage I">Stage I</option>
+                  <option value="Stage II">Stage II</option>
+                  <option value="Stage III">Stage III</option>
+                  <option value="Stage IV">Stage IV</option>
+                  <option value="N/A">N/A</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label-required">เคมี/รังสีรักษาก่อนผ่าตัด (Neoadjuvant)</label>
+                <select class="form-select" id="neoadjuvant_rx" required>
+                  <option value="None">None (ไม่ได้รับ)</option>
+                  <option value="Chemo">Chemo (เคมีบำบัด)</option>
+                  <option value="RT">RT (รังสีรักษา)</option>
+                  <option value="ChemoRT">ChemoRT (ได้รับทั้งสองอย่าง)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label-required">คะแนน ASA Physical Status (1-5)</label>
+                <select class="form-select" id="asa_physical_status" required>
+                  <option value="1">1 - Healthy</option>
+                  <option value="2" selected>2 - Mild systemic disease</option>
+                  <option value="3">3 - Severe systemic disease</option>
+                  <option value="4">4 - Severe disease constant threat to life</option>
+                  <option value="5">5 - Moribund</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label-required">
+                  คะแนนโภชนาการ (NRS-2002: 0-7)
+                  <span id="badge_nrs" class="alert-badge alert-badge-info">ยังไม่ประเมิน</span>
+                </label>
+                <input type="number" min="0" max="7" class="form-input" id="nutrition_screen_score" required value="1">
+                <span class="form-label-definition">หากคะแนน ≥ 3 ถือว่ามีความเสี่ยงสูง</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label-required">Serum Albumin ก่อนผ่าตัด (g/dL)</label>
+                <input type="number" step="0.01" min="0" max="10" class="form-input" id="serum_albumin" required placeholder="3.80">
+                <span class="form-label-definition">ผลเจาะล่าสุดภายใน 14 วันก่อนผ่าตัด</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. ERAS Compliance Checklist -->
+          <div class="form-section">
+            <h2 class="form-section-title">
+              <span class="global-nav-badge" style="font-size: 14px;">หมวด 3</span>
+              หมวดการปฏิบัติตาม ERAS Protocol (ERAS Compliance Checklist)
+            </h2>
+            <div class="form-section-subtitle">การเตรียมความพร้อมผู้ป่วยตามแนวทาง ERAS</div>
+
+            <div class="form-grid">
+              <div class="form-group" style="grid-column: span 1;">
+                <label class="form-checkbox-label">
+                  <input type="checkbox" class="form-checkbox-input" id="eras_counseling" checked>
+                  <strong>ผู้ป่วยได้รับปฐมนิเทศ/สอนคำแนะนำ ERAS ครบถ้วน</strong>
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label-required">
+                  ระยะเวลางดน้ำเปล่า/ของเหลวใส (ชั่วโมง)
+                  <span id="badge_fasting" class="alert-badge alert-badge-info">ยังไม่ระบุ</span>
+                </label>
+                <input type="number" step="0.1" min="0" max="24" class="form-input" id="fluid_fasting_hours" required value="2.5">
+                <span class="form-label-definition">เป้าหมาย ERAS คือ 2 - 3 ชั่วโมง</span>
+              </div>
+
+              <div class="form-group" style="grid-column: span 1;">
+                <label class="form-checkbox-label">
+                  <input type="checkbox" class="form-checkbox-input" id="carbo_loading_given" checked>
+                  <strong>ได้รับเครื่องดื่มคาร์โบไฮเดรต 2 ชม. ก่อนผ่าตัด</strong>
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label-required">ประเภทการเตรียมลำไส้ (Bowel Prep)</label>
+                <select class="form-select" id="bowel_prep_type" required>
+                  <option value="None">None (ไม่ต้องถ่ายท้อง)</option>
+                  <option value="Clear_Liquid" selected>Clear_Liquid (งดอาหารกากสูงอย่างเดียว)</option>
+                  <option value="Full_MBP">Full_MBP (ล้างลำไส้เต็มรูปแบบ Mechanical)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Intraoperative Data -->
+          <div class="form-section">
+            <h2 class="form-section-title">
+              <span class="global-nav-badge" style="font-size: 14px;">หมวด 4</span>
+              หมวดระหว่างผ่าตัด (Intraoperative Data)
+            </h2>
+            <div class="form-section-subtitle">ข้อมูลการผ่าตัด สารน้ำ และการเฝ้าระวังอุณหภูมิ</div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label form-label-required">วันเวลาเริ่มลงมีดผ่าตัด (Incision Time)</label>
+                <input type="datetime-local" class="form-input" id="surgery_start_datetime" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label-required">วันเวลาผ่าตัดเสร็จสิ้น (Suture Time)</label>
+                <input type="datetime-local" class="form-input" id="surgery_end_datetime" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">ระยะเวลาผ่าตัดคำนวณอัตโนมัติ</label>
+                <input type="text" class="form-input" id="calc_duration_display" readonly value="-">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label-required">เทคนิคและวิธีการผ่าตัด (Surgical Approach)</label>
+                <select class="form-select" id="surgical_approach" required>
+                  <option value="Laparoscopic" selected>Laparoscopic (ส่องกล้อง)</option>
+                  <option value="Robotic">Robotic (หุ่นยนต์)</option>
+                  <option value="Open">Open (เปิดหน้าท้อง)</option>
+                  <option value="Converted">Converted (ส่องกล้องเปลี่ยนเป็นเปิด)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label-required">สารน้ำระหว่างผ่าตัดทั้งหมด (mL)</label>
+                <input type="number" min="0" class="form-input" id="intraop_fluid_ml" required placeholder="1200">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label-required">ปริมาณเสียเลือดระหว่างผ่าตัด (mL)</label>
+                <input type="number" min="0" class="form-input" id="estimated_blood_loss" required placeholder="100">
+              </div>
+
+              <div class="form-group" style="grid-column: span 2;">
+                <label class="form-checkbox-label">
+                  <input type="checkbox" class="form-checkbox-input" id="temp_monitoring_used" checked>
+                  <strong>รักษา Core Temp ≥ 36.0°C ตลอดการผ่าตัด (Temperature Control)</strong>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Postoperative Recovery -->
+          <div class="form-section">
+            <h2 class="form-section-title">
+              <span class="global-nav-badge" style="font-size: 14px;">หมวด 5</span>
+              หมวดการฟื้นฟูหลังผ่าตัด (Postoperative Recovery)
+            </h2>
+            <div class="form-section-subtitle">ตัวชี้วัดการฟื้นตัว Pain Score และยาระงับปวด</div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">วันเวลาลุกนั่ง/เดินครั้งแรก (Mobilization)</label>
+                <input type="datetime-local" class="form-input" id="first_mobilization_dt">
+                <span class="form-label-definition">ทำกิจกรรมอย่างน้อย 15 นาที</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">วันเริ่มจิบน้ำ/ทานอาหารอ่อนครั้งแรก</label>
+                <input type="datetime-local" class="form-input" id="first_oral_intake_dt">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">วันเวลาปลดสายส่องท่อปัสสาวะออก</label>
+                <input type="datetime-local" class="form-input" id="foley_removal_dt">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label-required">Pain Score สูงสุดใน 24h (NRS 0-10)</label>
+                <input type="number" min="0" max="10" class="form-input" id="pain_score_24h_max" required value="3">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label-required">Opioids รวม (Morphine Eq mg: MME)</label>
+                <input type="number" step="0.1" min="0" class="form-input" id="total_morphine_eq_mg" required value="10.0">
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. Outcomes & Complications -->
+          <div class="form-section">
+            <h2 class="form-section-title">
+              <span class="global-nav-badge" style="font-size: 14px;">หมวด 6</span>
+              หมวดผลลัพธ์และภาวะแทรกซ้อน (Outcomes & Complications)
+            </h2>
+            <div class="form-section-subtitle">วันจำหน่ายโรงพยาบาลและภาวะแทรกซ้อน 30 วัน</div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">วันเวลาจำหน่ายออกจากโรงพยาบาล (Discharge)</label>
+                <input type="datetime-local" class="form-input" id="discharge_datetime">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Length of Stay (LOS) คำนวณอัตโนมัติ</label>
+                <input type="text" class="form-input" id="calc_los_display" readonly value="-">
+              </div>
+
+              <div class="form-group" style="grid-column: span 1;">
+                <label class="form-checkbox-label">
+                  <input type="checkbox" class="form-checkbox-input" id="complication_occured">
+                  <strong>มีภาวะแทรกซ้อนเกิดขึ้นภายใน 30 วัน</strong>
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">ระดับความรุนแรง (Clavien-Dindo Grade)</label>
+                <select class="form-select" id="clavien_dindo_grade">
+                  <option value="None">None (ไม่มีภาวะแทรกซ้อน)</option>
+                  <option value="Grade_I">Grade I (ไม่ต้องรักษาด้วยยาเพิ่มเติม)</option>
+                  <option value="Grade_II">Grade II (ต้องรักษาด้วยยา/ให้เลือด)</option>
+                  <option value="Grade_IIIa">Grade IIIa (ต้องทำหัตถการไม่ดมยา)</option>
+                  <option value="Grade_IIIb">Grade IIIb (ต้องผ่าตัดซ้ำโดยดมยา)</option>
+                  <option value="Grade_IV">Grade IV (อันตรายถึงชีวิต เข้า ICU)</option>
+                  <option value="Grade_V">Grade V (ผู้ป่วยเสียชีวิต)</option>
+                </select>
+              </div>
+
+              <div class="form-group" style="grid-column: span 1;">
+                <label class="form-checkbox-label">
+                  <input type="checkbox" class="form-checkbox-input" id="readmission_30days">
+                  <strong>Re-admission ภายใน 30 วันหลังจำหน่าย</strong>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Buttons -->
+          <div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 24px;">
+            <button type="button" class="btn-pearl-capsule" onclick="switchView('registry-view')">ยกเลิก</button>
+            <button type="submit" class="btn-primary">บันทึกข้อมูลผู้ป่วย</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- PATIENT CLINICAL SUMMARY MODAL -->
+  <div id="summaryModal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">รายงานสรุปข้อมูลผู้ป่วย ERAS</h3>
+        <button class="btn-pearl-capsule" onclick="closeSummaryModal()">✕ ปิด</button>
+      </div>
+      <div class="modal-body" id="summaryModalContent">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary-pill" onclick="printSummaryReport()"> พิมพ์รายงานสรุป</button>
+        <button class="btn-primary" onclick="closeSummaryModal()">ปิดหน้าต่าง</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Apple Footer -->
+  <footer class="apple-footer">
+    <div class="footer-inner">
+      <p style="margin-bottom: 12px; font-weight: 600;">สถาบันมะเร็งแห่งชาติ (National Cancer Institute, Thailand)</p>
+      <p>ระบบจัดเก็บข้อมูลและประเมินผลการดูแลผู้ป่วยตามแนวทาง ERAS (Enhanced Recovery After Surgery) พัฒนาขึ้นเพื่อยกระดับคุณภาพบริการการผ่าตัดโรคมะเร็ง อ้างอิงตามเกณฑ์มาตรฐานสากล</p>
+
+      <div class="footer-legal">
+        <span>© 2026 National Cancer Institute Thailand. All rights reserved.</span>
+        <span>Designed following Apple Web Design System Guidelines</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Logic Scripts -->
+  <script src="js/eras-calculator.js"></script>
+  <script src="js/patient-store.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
