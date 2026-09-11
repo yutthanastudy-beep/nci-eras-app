@@ -834,3 +834,61 @@ html, body {
     display: none;
   }
 }
+
+/* Login Overlay */
+.login-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  background-image: url('../assets/nci_hero.png');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Glassmorphism background blur */
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.login-overlay.hidden {
+  display: none;
+}
+
+.login-glass-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: var(--rounded-lg);
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  text-align: center;
+}
+
+.login-header h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 24px;
+  margin-bottom: 8px;
+  color: var(--color-ink);
+}
+
+.login-header p {
+  color: var(--color-ink-muted-48);
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+
+.login-error-msg {
+  color: var(--color-danger);
+  font-size: 14px;
+  margin-top: 16px;
+  min-height: 20px;
+}

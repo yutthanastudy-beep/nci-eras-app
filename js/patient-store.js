@@ -144,6 +144,10 @@ window.PatientStore = {
   async fetchAllRemote() {
     try {
       const res = await fetch(this.API_URL);
+      if (res.status === 401) {
+        if (window.showLogin) window.showLogin();
+        return [];
+      }
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data) && data.length > 0) {
@@ -199,11 +203,12 @@ window.PatientStore = {
 
     // Sync asynchronously to Cloudflare D1
     try {
-      await fetch(this.API_URL, {
+      const res = await fetch(this.API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(patient)
       });
+      if (res.status === 401 && window.showLogin) window.showLogin();
     } catch (e) {
       console.warn('Could not sync to Cloudflare D1 API:', e.message);
     }
@@ -217,9 +222,10 @@ window.PatientStore = {
     this.saveAll(list);
 
     try {
-      await fetch(`${this.API_URL}?id=${encodeURIComponent(id)}`, {
+      const res = await fetch(`${this.API_URL}?id=${encodeURIComponent(id)}`, {
         method: 'DELETE'
       });
+      if (res.status === 401 && window.showLogin) window.showLogin();
     } catch (e) {
       console.warn('Could not sync delete to Cloudflare D1 API:', e.message);
     }

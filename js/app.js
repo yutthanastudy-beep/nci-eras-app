@@ -34,7 +34,57 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('searchPatientInput')?.addEventListener('input', renderRegistryTable);
   document.getElementById('filterApproach')?.addEventListener('change', renderRegistryTable);
   document.getElementById('filterComplication')?.addEventListener('change', renderRegistryTable);
+
+  // Check Auth initially
+  checkAuthOnLoad();
 });
+
+/**
+ * Authentication Logic
+ */
+async function checkAuthOnLoad() {
+  // Try fetching data to see if we get 401
+  const list = await window.PatientStore.fetchAllRemote();
+  // If it's an unauthorized state, showLogin will be triggered by patient-store.js
+}
+
+window.showLogin = function() {
+  document.getElementById('login-overlay').classList.remove('hidden');
+}
+
+window.hideLogin = function() {
+  document.getElementById('login-overlay').classList.add('hidden');
+}
+
+window.handleLogin = async function(e) {
+  e.preventDefault();
+  const user = document.getElementById('login-username').value;
+  const pass = document.getElementById('login-password').value;
+  const errorMsg = document.getElementById('login-error');
+  
+  errorMsg.style.display = 'none';
+
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: user, password: pass })
+    });
+
+    if (res.ok) {
+      window.hideLogin();
+      renderRegistry();
+      renderDashboard();
+    } else {
+      const data = await res.json();
+      errorMsg.innerText = data.error || 'Login failed';
+      errorMsg.style.display = 'block';
+    }
+  } catch (err) {
+    errorMsg.innerText = 'Network error. Please try again.';
+    errorMsg.style.display = 'block';
+  }
+};
 
 /**
  * View Navigation

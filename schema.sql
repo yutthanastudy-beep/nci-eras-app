@@ -48,3 +48,26 @@ CREATE TABLE IF NOT EXISTS patients (
 CREATE INDEX IF NOT EXISTS idx_patients_hn ON patients(patient_hn);
 CREATE INDEX IF NOT EXISTS idx_patients_an ON patients(admission_an);
 CREATE INDEX IF NOT EXISTS idx_patients_created ON patients(created_at);
+
+-- Authentication Tables
+CREATE TABLE IF NOT EXISTS users (
+    id TEXT PRIMARY KEY,
+    username TEXT UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    role TEXT NOT NULL DEFAULT 'staff',
+    created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS sessions (
+    token TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    expires_at TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    FOREIGN KEY(user_id) REFERENCES users(id)
+);
+
+-- Insert Default Admin 
+-- Username: admin, Password: password123 
+-- (Password hash is SHA-256 of 'password123')
+INSERT OR IGNORE INTO users (id, username, password_hash, role, created_at)
+VALUES ('u-admin-1', 'admin', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'admin', CURRENT_TIMESTAMP);
