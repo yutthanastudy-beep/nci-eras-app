@@ -1,4 +1,5 @@
 import { onRequest as loginHandler } from '../functions/api/login.js';
+import { onRequest as logoutHandler } from '../functions/api/logout.js';
 import { onRequest as patientsHandler } from '../functions/api/patients.js';
 import { onRequest as middleware } from '../functions/api/_middleware.js';
 
@@ -8,15 +9,20 @@ export default {
 
     // Route API requests manually (since we are on Workers, not Pages)
     if (url.pathname.startsWith('/api/')) {
-      
-      // 1. Run Middleware
+
+      // Allow login and logout without auth check
+      if (url.pathname === '/api/login') {
+        return await loginHandler({ request, env });
+      }
+      if (url.pathname === '/api/logout') {
+        return await logoutHandler({ request, env });
+      }
+
+      // 1. Run Middleware for all other API routes
       let authResponse = await middleware({ request, env, next: () => null });
       if (authResponse) return authResponse;
 
       // 2. Route to specific endpoints
-      if (url.pathname === '/api/login') {
-        return await loginHandler({ request, env });
-      }
       if (url.pathname === '/api/patients') {
         return await patientsHandler({ request, env });
       }

@@ -58,6 +58,7 @@
       <li><a href="#" onclick="switchView('dashboard-view'); return false;">แดชบอร์ดวิเคราะห์</a></li>
       <li><a href="#" onclick="switchView('registry-view'); return false;">ทะเบียนผู้ป่วย</a></li>
       <li><a href="#" onclick="openFormView(); return false;">+ บันทึกรายใหม่</a></li>
+      <li><a href="#" onclick="handleLogout(); return false;" style="color: #ff6b6b;">ออกจากระบบ</a></li>
     </ul>
   </header>
 
@@ -71,6 +72,7 @@
       <a class="sub-nav-link" data-target="dashboard-view">แดชบอร์ดวิเคราะห์</a>
       <a class="sub-nav-link" data-target="registry-view">ทะเบียนผู้ป่วย</a>
       <button class="btn-primary" onclick="openFormView()">+ บันทึกผู้ป่วยใหม่</button>
+      <button onclick="handleLogout()" style="background: transparent; border: 1px solid #ff6b6b; color: #ff6b6b; padding: 6px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-family: inherit;">ออกจากระบบ</button>
     </div>
   </nav>
 

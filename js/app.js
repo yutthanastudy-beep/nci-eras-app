@@ -56,6 +56,15 @@ window.hideLogin = function() {
   document.getElementById('login-overlay').classList.add('hidden');
 }
 
+window.handleLogout = async function() {
+  try {
+    await fetch('/api/logout', { method: 'POST' });
+  } catch (e) {
+    // ignore network errors
+  }
+  window.showLogin();
+};
+
 window.handleLogin = async function(e) {
   e.preventDefault();
   const user = document.getElementById('login-username').value;
