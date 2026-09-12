@@ -139,7 +139,8 @@ window.PatientStore = {
   },
 
   /**
-   * Fetch all records (Attempts Cloudflare D1 API first, falls back to LocalStorage)
+   * Fetch all records (Cloudflare D1 is the source of truth)
+   * Falls back to LocalStorage ONLY if the API is unreachable (network error)
    */
   async fetchAllRemote() {
     try {
@@ -150,13 +151,16 @@ window.PatientStore = {
       }
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
+          // D1 is the source of truth — sync to localStorage and return
           this.saveAll(data);
           return data;
         }
       }
     } catch (e) {
       console.log('Cloudflare D1 API not reachable, using local cache:', e.message);
+      // Only fall back to localStorage when API is unreachable
+      return this.getAll();
     }
     return this.getAll();
   },
